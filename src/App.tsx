@@ -1,5 +1,9 @@
 function App() {
-  return <h2 className="text-6xl font-bold text-mandy-500">Hello World</h2>;
+  return (
+    <div>
+      <h1 className="text-6xl font-medium">Liste de courses</h1>
+    </div>
+  );
 }
 
 export default App;
