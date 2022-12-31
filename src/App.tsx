@@ -14,39 +14,43 @@ function App() {
   const inputNewItem = useRef<HTMLInputElement>(null);
   // useEffect
   useEffect(() => {
+    // getting items in localStorage if there is
     let storedItems = localStorage.getItem(localStorageName);
     if (storedItems != null) {
-      setItems([JSON.parse(storedItems)]);
+      setItems(JSON.parse(storedItems));
     }
   }, []);
   // methods
   const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
+    let oldItems = [...items];
+    // getting the input value, if not empty and not already in the list : add it to the items, add items to localStorage and clear the input value
     let val = inputNewItem.current?.value || "";
-    if (val !== "") {
-      setItems([
-        ...items,
-        {
-          name: val,
-          isChecked: false,
-        },
-      ]);
-      localStorage.setItem(localStorageName, JSON.stringify(items));
-      if (inputNewItem.current != null) {
-        inputNewItem.current.value = "";
-      }
+    if (val !== "" && oldItems.map((e) => e.name).indexOf(val) === -1) {
+      oldItems.push({
+        name: val,
+        isChecked: false,
+      });
+      setItems(oldItems);
+      localStorage.setItem(localStorageName, JSON.stringify(oldItems));
+    }
+    if (inputNewItem.current != null) {
+      inputNewItem.current.value = "";
     }
   };
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-slate-50 px-4 lg:px-0">
+    <div className="min-h-screen w-full flex items-center justify-center bg-slate-50 px-4 lg:px-0 py-4">
       <div className="max-w-lg w-full bg-white rounded-2xl p-8">
-        <h1 className="text-5xl font-medium text-center mb-8 text-mandy">
+        <h1 className="text-5xl font-medium text-center mb-8 text-mandy sr-only">
           Liste de courses
         </h1>
         {items && items.length > 0 ? (
-          <ul className="px-4 flex flex-col gap-4">
+          <ul className="px-4 flex flex-col gap-8">
             {items.map((item, index) => (
-              <li key={index} className="text-lg">
+              <li key={index} className="text-lg flex gap-4 items-center">
+                <button className="w-6 h-6 rounded-full border border-green-500 cursor-pointer">
+                  <span className="sr-only">Non coché</span>
+                </button>
                 {item.name}
               </li>
             ))}
